@@ -43,12 +43,13 @@ func (b *box) ExtractByIndex(i int) (Shape, error) {
 
 	if b.shapesCapacity >= (i+1) && len(b.shapes) >= i+1 {
 		v := b.shapes[i]
-		for ; i < len(b.shapes)-1; i++ {
-			b.shapes[i] = b.shapes[i+1]
+		if i < len(b.shapes)-1 {
+			copy(b.shapes[i:], b.shapes[i+1:])
 		}
+		b.shapes = b.shapes[:len(b.shapes)-1]
+
 		return v, nil
 	} else {
-
 		return nil, errors.New("no box found")
 	}
 
@@ -90,15 +91,16 @@ func (b *box) SumArea() float64 {
 // RemoveAllCircles removes all circles in the list
 // whether circles are not exist in the list, then returns an error
 func (b *box) RemoveAllCircles() error {
-	j := 0
+	var ok bool
 	for i := range b.shapes {
 		if _, ok := b.shapes[i].(*Circle); ok {
-			for j = i; j < len(b.shapes)-1; j++ {
-				b.shapes[j] = b.shapes[j+1]
+			if i < len(b.shapes)-1 {
+				copy(b.shapes[i:], b.shapes[i+1:])
 			}
+			b.shapes = b.shapes[:len(b.shapes)-1]
 		}
 	}
-	if j == 0 {
+	if !ok {
 		return errors.New("no circles in the list")
 	} else {
 		return nil
