@@ -43,7 +43,7 @@ func (b *box) ExtractByIndex(i int) (Shape, error) {
 
 	if b.shapesCapacity >= (i+1) && len(b.shapes) >= i+1 {
 		v := b.shapes[i]
-		for ; i < len(b.shapes); i++ {
+		for ; i < len(b.shapes)-1; i++ {
 			b.shapes[i] = b.shapes[i+1]
 		}
 		return v, nil
@@ -93,7 +93,7 @@ func (b *box) RemoveAllCircles() error {
 	j := 0
 	for i := range b.shapes {
 		if _, ok := b.shapes[i].(*Circle); ok {
-			for j = i; j < len(b.shapes); j++ {
+			for j = i; j < len(b.shapes)-1; j++ {
 				b.shapes[j] = b.shapes[j+1]
 			}
 		}
